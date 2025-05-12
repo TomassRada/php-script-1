@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<link rel="stylesheet" href="css.css">  
+  <meta charset="UTF-8">
+  <title>System info</title>
+</head>
+
+
+<body>
+  <div class="container">
+    <h1>Linux Server System info</h1>
+    <table id="systemInfo">
+      <tbody>
+        <tr><th>Hostname</th><td id="hostname"></td></tr>
+        <tr><th>Uptime</th><td id="uptime"></td></tr>
+        <tr><th>Users Loged In</th><td id="usersLogedIn"></td></tr>
+        <tr><th>RAM</th><td id="memory"></td></tr>
+        <tr><th>Disk</th><td id="disk"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+    // Načtení dat z api.php pomocí fetch API
+    fetch('api.php')
+      .then(response => response.json())
+      .then(data => {
+        // Nastavení hodnot do HTML podle ID
+        document.getElementById('hostname').textContent = data.hostname;
+        document.getElementById('uptime').textContent = data.uptime;
+        document.getElementById('usersLogedIn').textContent =  data.usersLogedIn;
+        document.getElementById('memory').textContent =
+          `Used ${data.memory.used_MB} MB from ${data.memory.total_MB} MB (free ${data.memory.free_MB} MB)`;
+        document.getElementById('disk').textContent =
+          `${data.disk.used} / ${data.disk.size} (${data.disk.usage_percent})`;
+      })
+      .catch(error => {
+        // Pokud nastane chyba při načítání dat, zobrazí se chyba
+        document.getElementById('systemInfo').innerHTML = `<tr><td colspan="2">Error loading system info.</td></tr>`;
+        console.error(error);
+      });
+  </script>
+</body>
+</html>
+
